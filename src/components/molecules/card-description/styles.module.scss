@@ -1,0 +1,32 @@
+.descWrapper {
+  @apply col-span-1 flex flex-col justify-between;
+
+  .font-default {
+    @apply p-1 text-zinc-300/90 select-text;
+
+    &::selection {
+      @apply bg-zinc-100 text-zinc-800;
+    }
+  }
+
+  .subtitle {
+    @extend .font-default;
+    @apply w-full border-b-2 border-zinc-300/40
+      text-xl font-medium;
+  }
+
+  .desc {
+    @extend .font-default;
+    @apply h-full w-full text-base self-start;
+  }
+
+  .linkWrapper {
+    @extend .font-default;
+    @apply w-max flex items-center cursor-pointer;
+
+    .link {
+      @extend .font-default;
+      @apply m-[0.5] text-sm underline italic;
+    }
+  }
+}

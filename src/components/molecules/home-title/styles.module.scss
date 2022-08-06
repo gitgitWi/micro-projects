@@ -1,0 +1,28 @@
+.titleWrapper {
+  @apply container w-full p-4 m-4 leading-none
+  bg-zinc-500 border-2 border-zinc-300/50 border-double rounded-lg 
+    flex flex-col justify-start items-center;
+
+  min-height: max-content;
+
+  .title {
+    @apply mb-1 rounded-lg
+      text-zinc-100/90 lg:text-6xl text-3xl font-mono font-bold
+      cursor-pointer select-none
+      transition-[decoration] duration-150;
+
+    text-shadow: 3px 3px 10px rgba($color: #000000, $alpha: 0.6);
+
+    .emphasis {
+      @apply inline-block text-zinc-300/90;
+    }
+  }
+
+  .subtitle {
+    @apply text-zinc-100/90 text-xl italic select-none;
+
+    .githubLink {
+      @apply underline;
+    }
+  }
+}

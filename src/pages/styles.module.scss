@@ -1,0 +1,5 @@
+.main {
+  @apply h-full min-h-screen max-w-7xl mx-auto
+    grid grid-rows-5 grid-cols-1 gap-2 justify-items-center items-center
+    bg-zinc-900;
+}

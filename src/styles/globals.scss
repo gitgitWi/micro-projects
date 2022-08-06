@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+  @apply bg-zinc-900;
+}
+
+.code-inline {
+  @apply bg-zinc-500 px-1 mx-1 rounded-md text-zinc-100/90 select-text;
+
+  &::selection {
+    @apply bg-zinc-100 text-zinc-800;
+  }
+}
