@@ -1,0 +1,53 @@
+.layout-default {
+  @apply max-w-screen-lg mx-auto mt-4;
+}
+
+.font-default {
+  @apply text-zinc-100 select-text selection:bg-zinc-100;
+}
+
+.header {
+  @extend .layout-default, .font-default;
+  @apply w-full text-center;
+
+  .title {
+    @apply text-3xl font-extrabold font-mono select-none;
+  }
+}
+
+.main {
+  @extend .layout-default, .font-default;
+  @apply max-w-screen-lg mx-auto;
+
+  .subtitle {
+    @apply w-full p-3 rounded-xl
+      font-bold text-2xl select-none;
+  }
+
+  .textInput {
+    @apply w-full p-3 rounded-xl
+      font-medium text-lg text-zinc-900/90 outline-none
+      selection:bg-zinc-600 selection:text-zinc-100;
+  }
+
+  .textsWrapper {
+    @apply w-full p-3;
+
+    .textChanged {
+      @apply inline-block font-medium text-lg underline underline-offset-2
+        selection:text-zinc-800;
+    }
+
+    .invalidUrl {
+      @apply text-red-600 font-extrabold underline;
+    }
+  }
+
+  .descriptionWrapper {
+    @apply px-6 py-2;
+
+    .description {
+      @apply p-2 border-l-4 border-zinc-500 italic font-serif text-sm;
+    }
+  }
+}
