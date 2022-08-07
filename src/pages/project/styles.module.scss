@@ -30,9 +30,10 @@
   }
 
   .textInput {
-    @apply w-full p-3 rounded-xl
+    @apply w-[calc(100%-1rem)] mx-2 p-3 rounded-xl 
       font-medium text-lg text-zinc-900/90 outline-none
-      selection:bg-zinc-600 selection:text-zinc-100;
+      selection:bg-zinc-600 selection:text-zinc-100
+      placeholder:italic placeholder:font-light;
   }
 
   .textsWrapper {
