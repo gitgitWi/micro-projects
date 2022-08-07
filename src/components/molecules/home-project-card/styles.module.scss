@@ -1,5 +1,5 @@
 .card {
-  @apply w-full h-40 p-4
+  @apply w-full min-h-max p-4
     grid grid-cols-2
     bg-zinc-700 rounded-lg
     transition-all duration-200;
