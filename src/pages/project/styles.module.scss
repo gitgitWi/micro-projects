@@ -22,12 +22,40 @@
   .subtitle {
     @apply w-full p-3 rounded-xl
       font-bold text-2xl select-none;
+
+    .serviceUrl {
+      @apply inline-block
+       font-mono text-rose-500 font-bold;
+    }
   }
 
-  .textInput {
-    @apply w-full p-3 rounded-xl
-      font-medium text-lg text-zinc-900/90 outline-none
-      selection:bg-zinc-600 selection:text-zinc-100;
+  .inputWrapper {
+    @apply w-[calc(100%-1rem)] mx-2
+      inline-flex justify-evenly items-center;
+
+    .textInput {
+      @apply w-[calc(100%-3.5rem)] p-3 rounded-xl leading-4 border
+        font-medium text-lg text-zinc-900/90 outline-none bg-zinc-300
+      selection:bg-zinc-600 selection:text-zinc-100
+        placeholder:italic placeholder:font-light;
+    }
+
+    .copyButton {
+      @apply w-max h-max p-3 border rounded-full
+        text-center;
+
+      &Enabled {
+        &:hover {
+          @apply bg-rose-500 cursor-wait;
+        }
+      }
+
+      &Disabled {
+        &:hover {
+          @apply bg-zinc-500 cursor-not-allowed;
+        }
+      }
+    }
   }
 
   .textsWrapper {
@@ -47,7 +75,8 @@
     @apply px-6 py-2;
 
     .description {
-      @apply p-2 border-l-4 border-zinc-500 italic font-serif text-sm;
+      @apply p-2 border-l-4 border-zinc-500 
+      italic font-serif text-sm;
     }
   }
 }
