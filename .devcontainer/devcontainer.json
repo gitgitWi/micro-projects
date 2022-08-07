@@ -1,0 +1,38 @@
+{
+	"name": "Existing Dockerfile",
+	"context": "..",
+	"dockerFile": "../Dockerfile.dev",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"streetsidesoftware.code-spell-checker",
+				"kisstkondoros.vscode-codemetrics",
+				"adpyke.codesnap",
+				"naumovs.color-highlight",
+				"dbaeumer.vscode-eslint",
+				"mhutchie.git-graph",
+				"GitHub.vscode-pull-request-github",
+				"codezombiech.gitignore",
+				"michelemelluso.gitignore",
+				"eamodio.gitlens",
+				"fabiospampinato.vscode-highlight",
+				"wix.vscode-import-cost",
+				"VisualStudioExptTeam.vscodeintellicode",
+				"VisualStudioExptTeam.intellicode-api-usage-examples",
+				"VisualStudioExptTeam.vscodeintellicode-completions",
+				"ms-vscode.live-server",
+				"christian-kohler.npm-intellisense",
+				"christian-kohler.path-intellisense",
+				"esbenp.prettier-vscode",
+				"mutantdino.resourcemonitor",
+				"syler.sass-indented",
+				"gencer.html-slim-scss-css-class-completion",
+				"mrmlnc.vscode-scss",
+				"foxundermoon.shell-format",
+				"bradlc.vscode-tailwindcss",
+				"rangav.vscode-thunder-client",
+				"WakaTime.vscode-wakatime"
+			]
+		}
+	}
+}
