@@ -4,7 +4,7 @@ import { eraseMediumSourceQuery, mediumTrackerDescription } from '../tracker-blo
 
 const BlockerHosts = z.object({
   service: z.string(),
-  host: z.string(),
+  host: z.array(z.string()),
   blocker: z.function().args(z.string()).returns(z.string()),
   description: z.string(),
 });
@@ -14,7 +14,7 @@ type BlockerHosts = z.infer<typeof BlockerHosts>;
 const hosts: BlockerHosts[] = [
   {
     service: 'medium',
-    host: 'medium.com',
+    host: ['medium.com', 'levelup.gitconnected.com'],
     blocker: eraseMediumSourceQuery,
     description: mediumTrackerDescription,
   },
@@ -22,5 +22,5 @@ const hosts: BlockerHosts[] = [
 
 export const blockerHostClassifier = (url: string): BlockerHosts | undefined => {
   const { hostname } = new URL(url);
-  return hosts.find((_currentHost) => _currentHost.host === hostname);
+  return hosts.find((_currentHost) => _currentHost.host.includes(hostname));
 };
