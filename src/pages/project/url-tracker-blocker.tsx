@@ -1,4 +1,5 @@
 import { ChangeEventHandler, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
+import { MdContentCopy } from 'react-icons/md';
 
 import { blockerHostClassifier } from '../../utils/blocker-host-classifier';
 import styles from './styles.module.scss';
@@ -10,10 +11,6 @@ const SAMPLE_URL =
 
 const urlValidator = (url: string) => {
   return /^(http)(s)?:\/\/\S+\.\S+/.test(url);
-};
-
-const copyToClipboard = async (url: string) => {
-  return navigator.clipboard.writeText(url);
 };
 
 /** @todo 컴포넌트 분리 */
@@ -51,13 +48,20 @@ const UrlTrackerBlocker = () => {
     setServiceName(service);
     setDescription(description);
 
-    // TODO: 리스트 추가
+    // TODO: 리스트 추가, 우선 localStorage 활용 -> DB 활용
   };
 
   const handleInputKeyUp: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key.toLowerCase() === 'enter' && isValidUrl) {
       validUrlAnchorRef.current?.click();
     }
+  };
+
+  const copyToClipboard = async () => {
+    if (!isValidUrl) return;
+
+    navigator.clipboard.writeText(url);
+    alert(`주소가 클립보드에 복사되었습니다`);
   };
 
   useEffect(() => {
@@ -79,14 +83,26 @@ const UrlTrackerBlocker = () => {
           </h2>
         )}
 
-        <input
-          type="text"
-          ref={urlInputRef}
-          onChange={handleInputTextChange}
-          onKeyUp={handleInputKeyUp}
-          className={styles.textInput}
-          placeholder={SAMPLE_URL}
-        />
+        <div className={styles.inputWrapper}>
+          <input
+            type="text"
+            ref={urlInputRef}
+            onChange={handleInputTextChange}
+            onKeyUp={handleInputKeyUp}
+            className={styles.textInput}
+            placeholder={SAMPLE_URL}
+          />
+          <button
+            type="button"
+            className={[
+              styles.copyButton,
+              isValidUrl ? styles.copyButtonEnabled : styles.copyButtonDisabled,
+            ].join(' ')}
+            onClick={copyToClipboard}
+          >
+            <MdContentCopy />
+          </button>
+        </div>
 
         <div className={styles.textsWrapper}>
           <div className={styles.textChanged}>
