@@ -1,5 +1,12 @@
-import { ChangeEventHandler, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
-import { MdContentCopy } from 'react-icons/md';
+import {
+  ChangeEventHandler,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { MdContentCopy, MdOutlineCancel } from 'react-icons/md';
 
 import { blockerHostClassifier } from '../../utils/blocker-host-classifier';
 import styles from './styles.module.scss';
@@ -57,6 +64,11 @@ const UrlTrackerBlocker = () => {
     }
   };
 
+  const handleResetButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    if (url.length === 0) return;
+    resetTargetServiceInfo();
+  };
+
   const copyToClipboard = async () => {
     if (!isValidUrl) return;
 
@@ -92,6 +104,11 @@ const UrlTrackerBlocker = () => {
             className={styles.textInput}
             placeholder={SAMPLE_URL}
           />
+
+          <button type="button" onClick={handleResetButtonClick} className={styles.resetButton}>
+            <MdOutlineCancel />
+          </button>
+
           <button
             type="button"
             className={[
