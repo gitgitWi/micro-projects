@@ -30,7 +30,7 @@ const _CardDescription = (props: CardDescriptionProps) => {
       {detailPageUrl && (
         <Link href={detailPageUrl}>
           <div className={styles.linkWrapper}>
-            <HiLink />
+            <HiLink className={styles.linkIcon} />
             <p className={styles.link}>{`${detailPageUrl}`}</p>
           </div>
         </Link>

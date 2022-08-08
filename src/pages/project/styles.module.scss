@@ -17,11 +17,11 @@
 
 .main {
   @extend .layout-default, .font-default;
-  @apply max-w-screen-lg mx-auto;
+  @apply max-w-screen-lg px-4;
 
   .subtitle {
     @apply w-full p-3 rounded-xl
-      font-bold text-2xl select-none;
+      font-bold md:text-2xl select-none;
 
     .serviceUrl {
       @apply inline-block

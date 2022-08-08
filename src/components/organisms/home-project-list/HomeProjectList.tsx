@@ -13,7 +13,7 @@ type ProjectType = z.infer<typeof projectType>;
 const projects: ProjectType[] = [
   {
     projectId: 'url-tracker-blocker',
-    title: 'URL 추적기 차단기',
+    title: 'URL Tracker Blocker',
     subtitle: 'URL에 있는 사용자 추적기 제거하기',
     description: '`QueryString`, `Paths`에 있는 사용자 추적기를 쉽게 제거해보자',
     path: '/project/url-tracker-blocker',
