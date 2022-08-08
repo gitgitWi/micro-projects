@@ -49,7 +49,15 @@
     .resetButton {
       @extend .button-default;
       @apply float-right relative right-6 h-full
-        text-rose-500/90 text-lg;
+       text-lg;
+
+      &Enabled {
+        @apply text-rose-500/90;
+      }
+
+      &Disabled {
+        @apply text-zinc-500/90;
+      }
     }
 
     .copyButton {

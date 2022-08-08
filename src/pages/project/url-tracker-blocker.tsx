@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { MdContentCopy, MdOutlineCancel } from 'react-icons/md';
+import { default as classnames } from 'classnames';
 
 import { blockerHostClassifier } from '../../utils/blocker-host-classifier';
 import styles from './styles.module.scss';
@@ -25,6 +26,7 @@ const UrlTrackerBlocker = () => {
   const urlInputRef = useRef<HTMLInputElement>(null);
   const validUrlAnchorRef = useRef<HTMLAnchorElement>(null);
 
+  const [inputText, setInputText] = useState<string>('');
   const [url, setUrl] = useState<string>('');
   const [isValidUrl, setIsValidUrl] = useState<boolean>(false);
 
@@ -38,20 +40,19 @@ const UrlTrackerBlocker = () => {
   };
 
   const handleInputTextChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const currentUrl = e.currentTarget.value;
+    setInputText(e.currentTarget.value);
 
-    const _isValidUrl = urlValidator(currentUrl);
+    const _isValidUrl = urlValidator(inputText);
     setIsValidUrl(_isValidUrl);
 
     if (!_isValidUrl) return resetTargetServiceInfo();
 
-    const host = blockerHostClassifier(currentUrl);
+    const host = blockerHostClassifier(inputText);
     if (!host) return resetTargetServiceInfo();
 
     const { service, blocker, description } = host;
 
-    const pureUrl = blocker(currentUrl);
-    setUrl(pureUrl);
+    setUrl(blocker(inputText));
     setServiceName(service);
     setDescription(description);
 
@@ -64,14 +65,15 @@ const UrlTrackerBlocker = () => {
     }
   };
 
-  const handleResetButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (url.length === 0) return;
+  const handleResetButtonClick: MouseEventHandler = () => {
+    if (inputText.length === 0) return;
+    urlInputRef.current!.value = '';
+    setInputText('');
     resetTargetServiceInfo();
   };
 
   const copyToClipboard = async () => {
     if (!isValidUrl) return;
-
     navigator.clipboard.writeText(url);
     alert(`주소가 클립보드에 복사되었습니다`);
   };
@@ -105,16 +107,23 @@ const UrlTrackerBlocker = () => {
             placeholder={SAMPLE_URL}
           />
 
-          <button type="button" onClick={handleResetButtonClick} className={styles.resetButton}>
+          <button
+            type="button"
+            onClick={handleResetButtonClick}
+            className={classnames(
+              styles.resetButton,
+              inputText.length === 0 ? styles.resetButtonDisabled : styles.resetButtonEnabled
+            )}
+          >
             <MdOutlineCancel />
           </button>
 
           <button
             type="button"
-            className={[
+            className={classnames(
               styles.copyButton,
-              isValidUrl ? styles.copyButtonEnabled : styles.copyButtonDisabled,
-            ].join(' ')}
+              isValidUrl ? styles.copyButtonEnabled : styles.copyButtonDisabled
+            )}
             onClick={copyToClipboard}
           >
             <MdContentCopy />
