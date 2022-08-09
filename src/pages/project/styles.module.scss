@@ -17,7 +17,8 @@
 
 .main {
   @extend .layout-default, .font-default;
-  @apply max-w-screen-lg px-4;
+  @apply max-w-screen-lg px-4
+    flex flex-col items-center;
 
   .subtitle {
     @apply w-full p-3 rounded-xl
@@ -91,10 +92,28 @@
     }
   }
 
+  .sharing {
+    @apply w-4/5 h-9 
+     flex justify-start items-center;
+
+    &Title {
+      @apply flex-none border-none
+       text-sm font-bold italic underline decoration-zinc-500/90
+       cursor-default select-none;
+    }
+
+    &Icon {
+      @apply w-7 h-7 ml-4 transition-colors duration-100
+        cursor-pointer hover:text-rose-500/90;
+    }
+  }
+
   .descriptionWrapper {
-    @apply px-6 py-2;
+    @apply w-full px-6 py-2 
+      justify-self-start;
 
     .description {
+      @extend .font-default;
       @apply p-2 border-l-4 border-zinc-500 
       italic font-serif text-sm;
 

@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { MdContentCopy, MdOutlineCancel } from 'react-icons/md';
+import { FaTelegram } from 'react-icons/fa';
 import { default as classnames } from 'classnames';
 
 import { blockerHostClassifier } from '../../utils/blocker-host-classifier';
@@ -18,7 +19,7 @@ const SAMPLE_URL =
   'https://medium.com/@eliran9692/5-software-architectural-patterns-871e2705c998?source=email-';
 
 const urlValidator = (url: string) => {
-  return /^(http)(s)?:\/\/\S+\.\S+/.test(url);
+  return /^(http)(s)?:\/\/[\S^.]+\.[\S^.]+/.test(url);
 };
 
 /** @todo 컴포넌트 분리 */
@@ -77,6 +78,10 @@ const UrlTrackerBlocker = () => {
     if (!isValidUrl) return;
     navigator.clipboard.writeText(url);
     alert(`주소가 클립보드에 복사되었습니다`);
+  };
+
+  const handleTelegramShareClick = () => {
+    return;
   };
 
   useEffect(() => {
@@ -151,6 +156,15 @@ const UrlTrackerBlocker = () => {
           </div>
           {url && !isValidUrl && <p className={styles.invalidUrl}>유효하지 않은 주소입니다</p>}
         </div>
+
+        {/* 링크 외부 앱으로 공유하기 */}
+        {isValidUrl && url && (
+          <div className={styles.sharing}>
+            <div className={styles.sharingTitle}>Share to</div>
+            <FaTelegram className={styles.sharingIcon} onClick={handleTelegramShareClick} />
+          </div>
+        )}
+
         <blockquote className={styles.descriptionWrapper}>
           <p className={styles.description}>{description}</p>
         </blockquote>
