@@ -12,7 +12,7 @@
   .subtitle {
     @extend .font-default;
     @apply w-full border-b-2 border-zinc-300/40
-      text-xl font-medium;
+      text-xl font-medium break-words;
   }
 
   .desc {
@@ -22,11 +22,19 @@
 
   .linkWrapper {
     @extend .font-default;
-    @apply w-max flex items-center cursor-pointer;
+    @apply flex items-center cursor-pointer
+    text-zinc-300/50;
+
+    .linkIcon {
+      @apply w-max h-5 p-1 m-1 
+        border border-solid border-zinc-300/50 rounded-full 
+        text-lg;
+    }
 
     .link {
       @extend .font-default;
-      @apply m-[0.5] text-sm underline italic;
+      @apply pt-0 m-[0.5] 
+        text-sm underline italic text-zinc-300/50;
     }
   }
 }

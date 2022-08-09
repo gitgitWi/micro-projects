@@ -17,11 +17,11 @@
 
 .main {
   @extend .layout-default, .font-default;
-  @apply max-w-screen-lg mx-auto;
+  @apply max-w-screen-lg px-4;
 
   .subtitle {
     @apply w-full p-3 rounded-xl
-      font-bold text-2xl select-none;
+      font-bold md:text-2xl select-none;
 
     .serviceUrl {
       @apply inline-block
@@ -30,19 +30,39 @@
   }
 
   .inputWrapper {
-    @apply w-[calc(100%-1rem)] mx-2
+    @apply w-full
       inline-flex justify-evenly items-center;
 
     .textInput {
-      @apply w-[calc(100%-3.5rem)] p-3 rounded-xl leading-4 border
+      @apply w-[calc(100%-2rem)] p-3 pr-6 rounded-xl leading-4 border
         font-medium text-lg text-zinc-900/90 outline-none bg-zinc-300
+        overflow-hidden text-ellipsis
       selection:bg-zinc-600 selection:text-zinc-100
         placeholder:italic placeholder:font-light;
     }
 
-    .copyButton {
-      @apply w-max h-max p-3 border rounded-full
+    .button-default {
+      @apply w-max h-max 
         text-center;
+    }
+
+    .resetButton {
+      @extend .button-default;
+      @apply float-right relative right-6 h-full
+       text-lg;
+
+      &Enabled {
+        @apply text-rose-500/90;
+      }
+
+      &Disabled {
+        @apply text-zinc-500/90;
+      }
+    }
+
+    .copyButton {
+      @extend .button-default;
+      @apply p-3 border rounded-full;
 
       &Enabled {
         &:hover {
@@ -77,6 +97,8 @@
     .description {
       @apply p-2 border-l-4 border-zinc-500 
       italic font-serif text-sm;
+
+      word-break: keep-all;
     }
   }
 }
