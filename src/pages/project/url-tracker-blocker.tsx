@@ -15,7 +15,7 @@ import styles from './styles.module.scss';
 // TODO: constants 파일 분리
 const DEFAULT_DESCRIPTION = `사용자 추적기가 제거된 URL로 이동해봅시다 🚀`;
 const SAMPLE_URL =
-  'https://medium.com/@eliran9692/5-software-architectural-patterns-871e2705c998?source=email-833c7bb9422b-1659808673620-digest.reader-5517fd7b58a6-871e2705c998----0-1------------------469522cf_e322_43b5_b77d_5ca1a56ef975-31';
+  'https://medium.com/@eliran9692/5-software-architectural-patterns-871e2705c998?source=email-';
 
 const urlValidator = (url: string) => {
   return /^(http)(s)?:\/\/\S+\.\S+/.test(url);
@@ -40,19 +40,20 @@ const UrlTrackerBlocker = () => {
   };
 
   const handleInputTextChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setInputText(e.currentTarget.value);
+    const currentInputText = e.currentTarget.value;
+    setInputText(currentInputText);
 
-    const _isValidUrl = urlValidator(inputText);
+    const _isValidUrl = urlValidator(currentInputText);
     setIsValidUrl(_isValidUrl);
 
     if (!_isValidUrl) return resetTargetServiceInfo();
 
-    const host = blockerHostClassifier(inputText);
+    const host = blockerHostClassifier(currentInputText);
     if (!host) return resetTargetServiceInfo();
 
     const { service, blocker, description } = host;
 
-    setUrl(blocker(inputText));
+    setUrl(blocker(currentInputText));
     setServiceName(service);
     setDescription(description);
 

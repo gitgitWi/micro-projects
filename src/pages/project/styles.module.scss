@@ -35,7 +35,7 @@
 
     .textInput {
       @apply w-[calc(100%-2rem)] p-3 pr-6 rounded-xl leading-4 border
-        font-medium text-lg text-zinc-900/90 outline-none bg-zinc-300
+        font-normal text-lg text-zinc-900/90 outline-none bg-zinc-300
         overflow-hidden text-ellipsis
       selection:bg-zinc-600 selection:text-zinc-100
         placeholder:italic placeholder:font-light;
