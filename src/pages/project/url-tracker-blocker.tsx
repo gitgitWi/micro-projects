@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { MdContentCopy, MdOutlineCancel } from 'react-icons/md';
+import { FaTelegram } from 'react-icons/fa';
 import { default as classnames } from 'classnames';
 
 import { blockerHostClassifier } from '../../utils/blocker-host-classifier';
@@ -15,10 +16,10 @@ import styles from './styles.module.scss';
 // TODO: constants 파일 분리
 const DEFAULT_DESCRIPTION = `사용자 추적기가 제거된 URL로 이동해봅시다 🚀`;
 const SAMPLE_URL =
-  'https://medium.com/@eliran9692/5-software-architectural-patterns-871e2705c998?source=email-833c7bb9422b-1659808673620-digest.reader-5517fd7b58a6-871e2705c998----0-1------------------469522cf_e322_43b5_b77d_5ca1a56ef975-31';
+  'https://medium.com/@eliran9692/5-software-architectural-patterns-871e2705c998?source=email-';
 
 const urlValidator = (url: string) => {
-  return /^(http)(s)?:\/\/\S+\.\S+/.test(url);
+  return /^(http)(s)?:\/\/[\S^.]+\.[\S^.]+/.test(url);
 };
 
 /** @todo 컴포넌트 분리 */
@@ -40,19 +41,20 @@ const UrlTrackerBlocker = () => {
   };
 
   const handleInputTextChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setInputText(e.currentTarget.value);
+    const currentInputText = e.currentTarget.value.trim();
+    setInputText(currentInputText);
 
-    const _isValidUrl = urlValidator(inputText);
+    const _isValidUrl = urlValidator(currentInputText);
     setIsValidUrl(_isValidUrl);
 
     if (!_isValidUrl) return resetTargetServiceInfo();
 
-    const host = blockerHostClassifier(inputText);
+    const host = blockerHostClassifier(currentInputText);
     if (!host) return resetTargetServiceInfo();
 
     const { service, blocker, description } = host;
 
-    setUrl(blocker(inputText));
+    setUrl(blocker(currentInputText));
     setServiceName(service);
     setDescription(description);
 
@@ -76,6 +78,18 @@ const UrlTrackerBlocker = () => {
     if (!isValidUrl) return;
     navigator.clipboard.writeText(url);
     alert(`주소가 클립보드에 복사되었습니다`);
+  };
+
+  const handleTelegramShareClick = async () => {
+    try {
+      const { health: isMessageCreated, reason } = await fetch(
+        `/api/share/telegram?${new URLSearchParams({ targetUrl: url }).toString()}`
+      ).then((res) => res.json());
+      if (!isMessageCreated) throw new Error(`url: ${url}\nreason: ${reason}`);
+      // TODO toast 컴포넌트로 성공/실패 알려주기
+    } catch (error) {
+      console.error(`[ERROR#handleTelegramShareClick]\n${error}`);
+    }
   };
 
   useEffect(() => {
@@ -150,6 +164,15 @@ const UrlTrackerBlocker = () => {
           </div>
           {url && !isValidUrl && <p className={styles.invalidUrl}>유효하지 않은 주소입니다</p>}
         </div>
+
+        {/* 링크 외부 앱으로 공유하기 */}
+        {isValidUrl && url && (
+          <div className={styles.sharing}>
+            <div className={styles.sharingTitle}>Share to</div>
+            <FaTelegram className={styles.sharingIcon} onClick={handleTelegramShareClick} />
+          </div>
+        )}
+
         <blockquote className={styles.descriptionWrapper}>
           <p className={styles.description}>{description}</p>
         </blockquote>
