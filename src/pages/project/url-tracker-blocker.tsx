@@ -80,8 +80,16 @@ const UrlTrackerBlocker = () => {
     alert(`주소가 클립보드에 복사되었습니다`);
   };
 
-  const handleTelegramShareClick = () => {
-    return;
+  const handleTelegramShareClick = async () => {
+    try {
+      const { health: isMessageCreated, reason } = await fetch(
+        `/api/share/telegram?${new URLSearchParams({ targetUrl: url }).toString()}`
+      ).then((res) => res.json());
+      if (!isMessageCreated) throw new Error(`url: ${url}\nreason: ${reason}`);
+      // TODO toast 컴포넌트로 성공/실패 알려주기
+    } catch (error) {
+      console.error(`[ERROR#handleTelegramShareClick]\n${error}`);
+    }
   };
 
   useEffect(() => {
