@@ -41,7 +41,7 @@ const UrlTrackerBlocker = () => {
   };
 
   const handleInputTextChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const currentInputText = e.currentTarget.value;
+    const currentInputText = e.currentTarget.value.trim();
     setInputText(currentInputText);
 
     const _isValidUrl = urlValidator(currentInputText);
