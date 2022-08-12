@@ -50,10 +50,9 @@ const UrlTrackerBlocker = () => {
     if (!_isValidUrl) return resetTargetServiceInfo();
 
     const host = blockerHostClassifier(currentInputText);
-    if (!host) return resetTargetServiceInfo();
+    if (!host) return setUrl(currentInputText);
 
     const { service, blocker, description } = host;
-
     setUrl(blocker(currentInputText));
     setServiceName(service);
     setDescription(description);
