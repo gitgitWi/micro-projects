@@ -46,7 +46,7 @@ const botHealthCheck = async () => {
       .then((message: TelegramGetMeResponse) => {
         return {
           health: message.ok === true && message.result.username === 'scrp_sherer_bot',
-          message: `can use bot\nok: ${message.ok}\nresult: ${JSON.stringify(message.result)}`,
+          message: `Telegram API says\n${JSON.stringify(message)}`,
         };
       });
   } catch (error) {
