@@ -27,9 +27,10 @@ export default async function telegramShareApi(req: NextApiRequest, res: NextApi
       .status(404)
       .json({ health: false, reason: "Request Doesn't have Query `targetUrl`" });
 
-  if (!(await botHealthCheck())) {
-    console.error('Telegram Bot is unhealthy');
-    return res.status(500).json({ health: false, reason: 'Telegram Bot is unhealthy' });
+  const { health: botHealth, message = '' } = await botHealthCheck();
+  if (!botHealth) {
+    console.error(`Telegram Bot is unhealthy\n${message}`);
+    return res.status(500).json({ health: false, reason: message });
   }
 
   const isCreated = await sendMessageToPredefinedChannel(targetUrl as string);
@@ -38,12 +39,21 @@ export default async function telegramShareApi(req: NextApiRequest, res: NextApi
   return res.status(200).send({ health: true, reason: 'Message Created' });
 }
 
-const botHealthCheck = () =>
-  request(`${BOT_BASE_URL}/getMe`, { method: 'GET' })
-    .then(({ body }) => body.json())
-    .then((message: TelegramGetMeResponse) => {
-      return message.ok === true && message.result.username === 'scrp_sherer_bot';
-    });
+const botHealthCheck = async () => {
+  try {
+    return request(`${BOT_BASE_URL}/getMe`, { method: 'GET' })
+      .then(({ body }) => body.json())
+      .then((message: TelegramGetMeResponse) => {
+        return {
+          health: message.ok === true && message.result.username === 'scrp_sherer_bot',
+          message: 'can use bot',
+        };
+      });
+  } catch (error) {
+    console.error(`[Error#botHealthCheck]\n, ${error}`);
+    return { health: false, message: error };
+  }
+};
 
 const sendMessageToPredefinedChannel = async (
   url: string,
