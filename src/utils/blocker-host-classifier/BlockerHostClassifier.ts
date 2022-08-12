@@ -14,7 +14,7 @@ type BlockerHosts = z.infer<typeof BlockerHosts>;
 const hosts: BlockerHosts[] = [
   {
     service: 'medium',
-    host: ['medium.com', 'levelup.gitconnected.com'],
+    host: ['medium.com', 'levelup.gitconnected.com', 'betterprogramming.pub'],
     blocker: eraseMediumSourceQuery,
     description: mediumTrackerDescription,
   },
