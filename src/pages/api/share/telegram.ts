@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { request } from 'undici';
 
 import { parseMetaTagsFromHtml } from './parse-docs';
 
@@ -38,8 +39,8 @@ export default async function telegramShareApi(req: NextApiRequest, res: NextApi
 }
 
 const botHealthCheck = () =>
-  fetch(`${BOT_BASE_URL}/getMe`, { method: 'GET' })
-    .then((response) => response.json())
+  request(`${BOT_BASE_URL}/getMe`, { method: 'GET' })
+    .then(({ body }) => body.json())
     .then((message: TelegramGetMeResponse) => {
       return message.ok === true && message.result.username === 'scrp_sherer_bot';
     });
@@ -55,7 +56,7 @@ const sendMessageToPredefinedChannel = async (
 
   try {
     const { ogTitle, twitterTitle, ogDescription, twitterDescription } = parseMetaTagsFromHtml(
-      await fetch(url).then((res) => res.text())
+      await request(url).then(({ body }) => body.text())
     );
 
     const fetchUrl = `${BOT_BASE_URL}/sendMessage?${baseQs.toString()}&text=${createMessageText(
@@ -64,9 +65,9 @@ const sendMessageToPredefinedChannel = async (
       ogDescription || twitterDescription
     )}`;
 
-    const response = await fetch(fetchUrl);
+    const response = await request(fetchUrl);
 
-    const createdMessage = await response.json();
+    const createdMessage = await response.body.json();
     if (!createdMessage.ok || !createdMessage?.result?.['message_id'])
       throw new Error(
         `Telegram Message Not Created\nfetchUrl: ${fetchUrl}\n${JSON.stringify(
