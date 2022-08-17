@@ -135,7 +135,11 @@ const UrlTrackerBlocker = () => {
   const handleTelegramShareClick = async () => {
     try {
       const { health: isMessageCreated, reason } = await fetch(
-        `/api/share/telegram?${new URLSearchParams({ targetUrl: url }).toString()}`
+        `/api/share/telegram?${new URLSearchParams({
+          title: urlPreviewProps.title,
+          url: urlPreviewProps.url,
+          description: urlPreviewProps.description || '',
+        }).toString()}`
       ).then((res) => res.json());
       if (!isMessageCreated) throw new Error(`url: ${url}\nreason: ${reason}`);
       // TODO toast 컴포넌트로 성공/실패 알려주기
