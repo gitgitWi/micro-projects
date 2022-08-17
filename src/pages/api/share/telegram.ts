@@ -1,31 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { request } from 'undici';
 
-import { parseMetaTagsFromHtml } from './parse-docs';
+import { UrlPreviewCardProps } from '../../../components/molecules/url-preview-card';
 
 interface TelegramGetMeResponse {
   ok: boolean;
   result: any;
 }
 
-interface TelegramSendMessageRequestBody {
-  chat_id: string;
-  parse_mode: string;
-  text: string;
-}
-
-interface TelegramSendMessageResponse {}
-
 const BOT_BASE_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_API_TOKEN}`;
 
 export default async function telegramShareApi(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') return;
-  const { targetUrl = '' } = req.query;
+  const previewProps = req.query as UrlPreviewCardProps;
 
-  if (!targetUrl)
-    return res
-      .status(404)
-      .json({ health: false, reason: "Request Doesn't have Query `targetUrl`" });
+  if (!previewProps.url)
+    return res.status(404).json({ health: false, reason: "Request Doesn't have Query `url`" });
 
   const { health: botHealth, message = '' } = await botHealthCheck();
   if (!botHealth) {
@@ -33,7 +23,7 @@ export default async function telegramShareApi(req: NextApiRequest, res: NextApi
     return res.status(500).json({ health: false, reason: message });
   }
 
-  const isCreated = await sendMessageToPredefinedChannel(targetUrl as string);
+  const isCreated = await sendMessageToPredefinedChannel(previewProps);
   if (!isCreated) return res.status(500).json({ health: false, reason: 'Message Not Created' });
 
   return res.status(200).send({ health: true, reason: 'Message Created' });
@@ -56,7 +46,7 @@ const botHealthCheck = async () => {
 };
 
 const sendMessageToPredefinedChannel = async (
-  url: string,
+  props: UrlPreviewCardProps,
   chat_id = process.env.TELEGRAM_BOT_CHAT_ID!
 ) => {
   const baseQs = new URLSearchParams({
@@ -65,14 +55,10 @@ const sendMessageToPredefinedChannel = async (
   });
 
   try {
-    const { ogTitle, twitterTitle, ogDescription, twitterDescription } = parseMetaTagsFromHtml(
-      await request(url).then(({ body }) => body.text())
-    );
-
     const fetchUrl = `${BOT_BASE_URL}/sendMessage?${baseQs.toString()}&text=${createMessageText(
-      url,
-      ogTitle || twitterTitle,
-      ogDescription || twitterDescription
+      props.url,
+      props.title,
+      props.description
     )}`;
 
     const response = await request(fetchUrl);
@@ -94,5 +80,5 @@ const sendMessageToPredefinedChannel = async (
 };
 
 const createMessageText = (url: string, title = url, description = '') => {
-  return `<b>${title}</b>%0A- <i>${url}</i>%0A${description}`;
+  return `<b>${title}</b>%0A<i>${url}</i>%0A${description}`;
 };
