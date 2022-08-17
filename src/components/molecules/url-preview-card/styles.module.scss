@@ -27,8 +27,8 @@
     }
 
     &Description {
-      @apply p-2 
-        font-serif font-normal text-base selection:text-zinc-700/90;
+      @apply p-2 h-max
+        font-serif font-normal text-base selection:text-zinc-700/90 whitespace-pre-wrap text-ellipsis;
     }
   }
 }
