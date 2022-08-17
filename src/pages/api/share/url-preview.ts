@@ -1,25 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { parseMetaTagsFromHtml } from './parse-docs';
+
+const domParseFuncUrl = `https://clever-fox-93.deno.dev`;
 
 export default async function urlPreview(req: NextApiRequest, res: NextApiResponse) {
   try {
     const {
-      ogTitle = '',
-      ogDescription = '',
-      ogImage = '',
-      twitterTitle = '',
-      twitterImage = '',
-      twitterDescription = '',
-    } = await fetch(req.query.url as string).then(async (res) =>
-      parseMetaTagsFromHtml(await res.text())
-    );
+      title = [],
+      author = [],
+      description = [],
+      image = [],
+    } = await fetch(`${domParseFuncUrl}/?url=${req.query.url}`).then(async (res) => res.json());
 
     return res.status(200).json({
-      ok: true,
+      ok: title.length > 0,
       data: {
-        title: ogTitle || twitterTitle,
-        description: ogDescription || twitterDescription,
-        image: ogImage || twitterImage,
+        title,
+        author,
+        description,
+        image,
       },
     });
   } catch (error) {

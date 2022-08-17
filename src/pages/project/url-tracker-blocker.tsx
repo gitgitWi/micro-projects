@@ -33,6 +33,7 @@ const UrlTrackerBlocker = () => {
 
   const [serviceName, setServiceName] = useState<string>('');
   const [description, setDescription] = useState<string>(DEFAULT_DESCRIPTION);
+  const [timeoutId, setTimeoutId] = useState<number>(-1);
 
   const resetTargetServiceInfo = () => {
     setUrl('');
@@ -44,6 +45,10 @@ const UrlTrackerBlocker = () => {
     const currentInputText = e.currentTarget.value.trim();
     setInputText(currentInputText);
 
+    /** @description simple debouncing */
+    window.clearTimeout(timeoutId);
+    if (timeoutId !== -1) setTimeoutId(-1);
+
     const _isValidUrl = urlValidator(currentInputText);
     setIsValidUrl(_isValidUrl);
 
@@ -53,10 +58,18 @@ const UrlTrackerBlocker = () => {
     if (!host) return setUrl(currentInputText);
 
     const { service, blocker, description } = host;
-    setUrl(blocker(currentInputText));
+    const targetUrl = blocker(currentInputText);
+    setUrl(targetUrl);
     setServiceName(service);
     setDescription(description);
 
+    setTimeoutId(
+      window.setTimeout(() => {
+        fetch(`/api/share/url-preview?url=${targetUrl}`)
+          .then((res) => res.json())
+          .then((data) => console.log(data));
+      }, 200)
+    );
     // TODO: 리스트 추가, 우선 localStorage 활용 -> DB 활용
   };
 
