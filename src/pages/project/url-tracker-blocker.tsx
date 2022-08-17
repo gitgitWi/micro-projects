@@ -18,6 +18,13 @@ import styles from './styles.module.scss';
 const DEFAULT_DESCRIPTION = `사용자 추적기가 제거된 URL로 이동해봅시다 🚀`;
 const SAMPLE_URL =
   'https://medium.com/@eliran9692/5-software-architectural-patterns-871e2705c998?source=email-';
+const DEFAULT_URL_PREVIEW_PROPS = {
+  title: '',
+  url: '',
+  author: '',
+  description: '',
+  image: '',
+} as const;
 
 const urlValidator = (url: string) => {
   return /^(http)(s)?:\/\/[\S^.]+\.[\S^.]+/.test(url);
@@ -36,18 +43,14 @@ const UrlTrackerBlocker = () => {
   const [description, setDescription] = useState<string>(DEFAULT_DESCRIPTION);
   const [timeoutId, setTimeoutId] = useState<number>(-1);
 
-  const [urlPreviewProps, setUrlPreviewProps] = useState<UrlPreviewCardProps>({
-    title: '',
-    url: '',
-    author: '',
-    description: '',
-    image: '',
-  });
+  const [urlPreviewProps, setUrlPreviewProps] =
+    useState<UrlPreviewCardProps>(DEFAULT_URL_PREVIEW_PROPS);
 
   const resetTargetServiceInfo = () => {
     setUrl('');
     setServiceName('');
     setDescription(DEFAULT_DESCRIPTION);
+    setUrlPreviewProps(DEFAULT_URL_PREVIEW_PROPS);
   };
 
   const handleInputTextChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -64,13 +67,17 @@ const UrlTrackerBlocker = () => {
     if (!_isValidUrl) return resetTargetServiceInfo();
 
     const host = blockerHostClassifier(currentInputText);
-    if (!host) return setUrl(currentInputText);
-
-    const { service, blocker, description } = host;
-    const targetUrl = blocker(currentInputText);
-    setUrl(targetUrl);
-    setServiceName(service);
-    setDescription(description);
+    let targetUrl = currentInputText;
+    /** @todo 분기별 함수 분리 */
+    if (host) {
+      const { service, blocker, description } = host;
+      targetUrl = blocker(currentInputText);
+      setUrl(targetUrl);
+      setServiceName(service);
+      setDescription(description);
+    } else {
+      setUrl(targetUrl);
+    }
 
     /**
      * @todo
@@ -143,8 +150,10 @@ const UrlTrackerBlocker = () => {
       ).then((res) => res.json());
       if (!isMessageCreated) throw new Error(`url: ${url}\nreason: ${reason}`);
       // TODO toast 컴포넌트로 성공/실패 알려주기
+      alert('텔레그램 전송에 성공했어요 🚀');
     } catch (error) {
       console.error(`[ERROR#handleTelegramShareClick]\n${error}`);
+      alert('텔레그램 전송에 실패했어요 🤦');
     }
   };
 
@@ -159,11 +168,15 @@ const UrlTrackerBlocker = () => {
         <h1 className={styles.title}>Url Tracker Blocker</h1>
       </header>
       <main className={styles.main}>
-        {serviceName.length === 0 ? (
-          <h2 className={styles.subtitle}>URL을 입력해주세요 </h2>
+        {url.length === 0 ? (
+          <h2 className={styles.subtitle}>URL을 입력해주세요</h2>
         ) : (
           <h2 className={styles.subtitle}>
-            <p className={styles.serviceUrl}>{serviceName}</p> {'주소인 것 같네요 🤠'}
+            {serviceName.length === 0 ? (
+              <p>{'잘 모르는 서비스지만 찾아볼게요'}</p>
+            ) : (
+              <p className={styles.serviceUrl}>{serviceName} 주소인 것 같네요 🤠</p>
+            )}
           </h2>
         )}
 
@@ -220,7 +233,7 @@ const UrlTrackerBlocker = () => {
           </div>
           {url && !isValidUrl && <p className={styles.invalidUrl}>유효하지 않은 주소입니다</p>}
 
-          {urlPreviewProps.title && <UrlPreviewCard {...urlPreviewProps} />}
+          {url && urlPreviewProps.title && <UrlPreviewCard {...urlPreviewProps} />}
         </div>
 
         {/* 링크 외부 앱으로 공유하기 */}
