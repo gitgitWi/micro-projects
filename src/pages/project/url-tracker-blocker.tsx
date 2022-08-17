@@ -11,6 +11,7 @@ import { FaTelegram } from 'react-icons/fa';
 import { default as classnames } from 'classnames';
 
 import { blockerHostClassifier } from '../../utils/blocker-host-classifier';
+import { UrlPreviewCard, UrlPreviewCardProps } from '../../components/molecules';
 import styles from './styles.module.scss';
 
 // TODO: constants 파일 분리
@@ -34,6 +35,13 @@ const UrlTrackerBlocker = () => {
   const [serviceName, setServiceName] = useState<string>('');
   const [description, setDescription] = useState<string>(DEFAULT_DESCRIPTION);
   const [timeoutId, setTimeoutId] = useState<number>(-1);
+
+  const [urlPreviewProps, setUrlPreviewProps] = useState<UrlPreviewCardProps>({
+    title: '',
+    author: '',
+    description: '',
+    image: '',
+  });
 
   const resetTargetServiceInfo = () => {
     setUrl('');
@@ -63,11 +71,32 @@ const UrlTrackerBlocker = () => {
     setServiceName(service);
     setDescription(description);
 
+    /**
+     * @todo
+     * - validation => loading UI
+     * - refactoring => hook
+     */
     setTimeoutId(
       window.setTimeout(() => {
         fetch(`/api/share/url-preview?url=${targetUrl}`)
           .then((res) => res.json())
-          .then((data) => console.log(data));
+          .then(({ data: { title, author, description, image } }) => {
+            setUrlPreviewProps({
+              title: title.find(
+                ({ type }: { type: string }) => type === 'og:title' || type === 'twitter:title'
+              ).value,
+              author: author.find(
+                ({ type }: { type: string }) => type === 'author' || type === 'article:author'
+              ).value,
+              description: description.find(
+                ({ type }: { type: string }) =>
+                  type === 'og:description' || type === 'twitter:description'
+              ).value,
+              image: image.find(
+                ({ type }: { type: string }) => type === 'og:image' || type === 'twitter:image:src'
+              ).value,
+            });
+          });
       }, 200)
     );
     // TODO: 리스트 추가, 우선 localStorage 활용 -> DB 활용
@@ -175,6 +204,8 @@ const UrlTrackerBlocker = () => {
             )}
           </div>
           {url && !isValidUrl && <p className={styles.invalidUrl}>유효하지 않은 주소입니다</p>}
+
+          {urlPreviewProps.title && <UrlPreviewCard {...urlPreviewProps} />}
         </div>
 
         {/* 링크 외부 앱으로 공유하기 */}
