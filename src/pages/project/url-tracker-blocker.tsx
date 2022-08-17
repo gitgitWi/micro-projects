@@ -38,6 +38,7 @@ const UrlTrackerBlocker = () => {
 
   const [urlPreviewProps, setUrlPreviewProps] = useState<UrlPreviewCardProps>({
     title: '',
+    url: '',
     author: '',
     description: '',
     image: '',
@@ -80,23 +81,33 @@ const UrlTrackerBlocker = () => {
       window.setTimeout(() => {
         fetch(`/api/share/url-preview?url=${targetUrl}`)
           .then((res) => res.json())
-          .then(({ data: { title, author, description, image } }) => {
-            setUrlPreviewProps({
-              title: title.find(
-                ({ type }: { type: string }) => type === 'og:title' || type === 'twitter:title'
-              ).value,
-              author: author.find(
-                ({ type }: { type: string }) => type === 'author' || type === 'article:author'
-              ).value,
-              description: description.find(
-                ({ type }: { type: string }) =>
-                  type === 'og:description' || type === 'twitter:description'
-              ).value,
-              image: image.find(
-                ({ type }: { type: string }) => type === 'og:image' || type === 'twitter:image:src'
-              ).value,
-            });
-          });
+          .then(
+            ({
+              data: { title, author, description, image },
+            }: {
+              data: {
+                title: { type: string; value: string }[];
+                author: { type: string; value: string }[];
+                description: { type: string; value: string }[];
+                image: { type: string; value: string }[];
+              };
+            }) => {
+              setUrlPreviewProps({
+                url: targetUrl,
+                title:
+                  title.find(({ type }) => type === 'og:title' || type === 'twitter:title')
+                    ?.value || '',
+                author: author.find(({ type }) => type === 'author')?.value || '',
+                description:
+                  description.find(
+                    ({ type }) => type === 'og:description' || type === 'twitter:description'
+                  )?.value || '',
+                image:
+                  image.find(({ type }) => type === 'og:image' || type === 'twitter:image:src')
+                    ?.value || '',
+              });
+            }
+          );
       }, 200)
     );
     // TODO: 리스트 추가, 우선 localStorage 활용 -> DB 활용
