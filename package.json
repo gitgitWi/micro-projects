@@ -17,7 +17,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "sass": "^1.54.3",
-    "undici": "^5.8.2",
+    "undici": "^5.19.1",
     "zod": "^3.17.3"
   },
   "devDependencies": {
